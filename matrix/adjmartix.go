@@ -1,4 +1,4 @@
-package adjmatrix
+package matrix
 
 import (
 	"bufio"
@@ -12,15 +12,15 @@ import (
 const MatrixEdge = 1
 
 type AdjMatrix struct {
-	V   int
-	E   int
+	v   int
+	e   int
 	adj [][]int
 }
 
 func (a *AdjMatrix) String() (output string) {
-	output += fmt.Sprintf("V = %d, E = %d\n", a.V, a.E)
-	for x := 0; x < a.V; x++ {
-		for y := 0; y < a.V; y++ {
+	output += fmt.Sprintf("v = %d, e = %d\n", a.v, a.e)
+	for x := 0; x < a.v; x++ {
+		for y := 0; y < a.v; y++ {
 			output += fmt.Sprintf("%d ", a.adj[x][y])
 		}
 		output += "\n"
@@ -29,13 +29,13 @@ func (a *AdjMatrix) String() (output string) {
 }
 
 func (a *AdjMatrix) IsValid() error {
-	if a.V < 0 {
+	if a.v < 0 {
 		return errors.New("vertex must be non-negative")
 	}
-	if a.E < 0 {
+	if a.e < 0 {
 		return errors.New("edge must be non-negative")
 	}
-	for i := 0; i < a.V; i++ {
+	for i := 0; i < a.v; i++ {
 		if a.adj[i][i] == MatrixEdge {
 			return errors.New("self loop is detected") // 排除自环边情况
 		}
@@ -43,7 +43,20 @@ func (a *AdjMatrix) IsValid() error {
 	return nil
 }
 
+func (a *AdjMatrix) IsValidVertex(v int) error {
+	if v < 0 || v >= a.v {
+		return fmt.Errorf("vertex %d is invalid", v)
+	}
+	return nil
+}
+
 func (a *AdjMatrix) AddEdge(x int, y int) error {
+	if err := a.IsValidVertex(x); err != nil {
+		return err
+	}
+	if err := a.IsValidVertex(y); err != nil {
+		return err
+	}
 	if a.adj[x][y] == MatrixEdge || a.adj[y][x] == MatrixEdge {
 		return errors.New("parallel edges are detected") // 排除平行边情况
 	}
@@ -53,6 +66,46 @@ func (a *AdjMatrix) AddEdge(x int, y int) error {
 	a.adj[x][y] = MatrixEdge
 	a.adj[y][x] = MatrixEdge
 	return nil
+}
+
+func (a *AdjMatrix) V() int {
+	return a.v
+}
+
+func (a *AdjMatrix) E() int {
+	return a.e
+}
+
+func (a *AdjMatrix) HasEdge(x int, y int) (err error, hasEdge bool) {
+	if err = a.IsValidVertex(x); err != nil {
+		return
+	}
+	if err = a.IsValidVertex(y); err != nil {
+		return
+	}
+	return nil, a.adj[x][y] == MatrixEdge
+}
+
+// 与顶点v相邻的顶点
+func (a *AdjMatrix) Adj(v int) (vs []int, err error) {
+	if err = a.IsValidVertex(v); err != nil {
+		return
+	}
+	for vertex, hasEdge := range a.adj[v] {
+		if hasEdge == MatrixEdge {
+			vs = append(vs, vertex)
+		}
+	}
+	return
+}
+
+// 顶点v的度
+func (a *AdjMatrix) Degree(v int) (degree int, err error) {
+	var vs []int
+	if vs, err = a.Adj(v); err != nil {
+		return -1, err
+	}
+	return len(vs), nil
 }
 
 func newAdjMatrix(filename string) *AdjMatrix {
@@ -72,11 +125,11 @@ func newAdjMatrix(filename string) *AdjMatrix {
 	scanner.Scan()
 
 	lineData = strings.Split(scanner.Text(), " ")
-	adjMatrix.V, _ = strconv.Atoi(lineData[0])
-	adjMatrix.E, _ = strconv.Atoi(lineData[1])
+	adjMatrix.v, _ = strconv.Atoi(lineData[0])
+	adjMatrix.e, _ = strconv.Atoi(lineData[1])
 
-	for i := 0; i < adjMatrix.V; i++ {
-		adjMatrix.adj = append(adjMatrix.adj, make([]int, adjMatrix.V))
+	for i := 0; i < adjMatrix.v; i++ {
+		adjMatrix.adj = append(adjMatrix.adj, make([]int, adjMatrix.v))
 	}
 
 	for scanner.Scan() {
