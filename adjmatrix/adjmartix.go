@@ -2,6 +2,7 @@ package adjmatrix
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -25,6 +26,33 @@ func (a *AdjMatrix) String() (output string) {
 		output += "\n"
 	}
 	return
+}
+
+func (a *AdjMatrix) IsValid() error {
+	if a.V < 0 {
+		return errors.New("vertex must be non-negative")
+	}
+	if a.E < 0 {
+		return errors.New("edge must be non-negative")
+	}
+	for i := 0; i < a.V; i++ {
+		if a.adj[i][i] == MatrixEdge {
+			return errors.New("self loop is detected") // 排除自环边情况
+		}
+	}
+	return nil
+}
+
+func (a *AdjMatrix) AddEdge(x int, y int) error {
+	if a.adj[x][y] == MatrixEdge || a.adj[y][x] == MatrixEdge {
+		return errors.New("parallel edges are detected") // 排除平行边情况
+	}
+	if x == y {
+		return errors.New("self loop is detected")
+	}
+	a.adj[x][y] = MatrixEdge
+	a.adj[y][x] = MatrixEdge
+	return nil
 }
 
 func newAdjMatrix(filename string) *AdjMatrix {
@@ -57,8 +85,13 @@ func newAdjMatrix(filename string) *AdjMatrix {
 		y, _ := strconv.Atoi(lineData[1])
 
 		// 无向图
-		adjMatrix.adj[x][y] = MatrixEdge
-		adjMatrix.adj[y][x] = MatrixEdge
+		if err := adjMatrix.AddEdge(x, y); err != nil {
+			panic(err)
+		}
+	}
+
+	if err := adjMatrix.IsValid(); err != nil {
+		panic(err)
 	}
 
 	return adjMatrix
