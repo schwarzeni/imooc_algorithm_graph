@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-const MatrixEdge = 1
-
 type AdjMatrix struct {
 	v   int
 	e   int
@@ -76,14 +74,14 @@ func (a *AdjMatrix) E() int {
 	return a.e
 }
 
-func (a *AdjMatrix) HasEdge(x int, y int) (err error, hasEdge bool) {
+func (a *AdjMatrix) HasEdge(x int, y int) (hasEdge bool, err error) {
 	if err = a.IsValidVertex(x); err != nil {
 		return
 	}
 	if err = a.IsValidVertex(y); err != nil {
 		return
 	}
-	return nil, a.adj[x][y] == MatrixEdge
+	return a.adj[x][y] == MatrixEdge, nil
 }
 
 // 与顶点v相邻的顶点
