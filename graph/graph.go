@@ -1,8 +1,8 @@
-package matrix
+package graph
 
 const MatrixEdge = 1
 
-type Matrix interface {
+type Graph interface {
 	AddEdge(x int, y int) error
 	V() int
 	E() int
