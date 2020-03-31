@@ -66,3 +66,37 @@ for (int v = 0; v < V; v ++) {
 6 - 2
 6 - 5
 ```
+
+---
+
+### 关于广度优先遍历
+
+使用广度优先遍历求得的路径即为最短路径，但是图必须为**无权图**
+
+BFS 和 DSF 拥有一套相似的逻辑框架
+
+```text
+visited[0 ... V-1] = false
+
+for (int v = 0; v < V; v ++) {
+    if (!visited[v]) {
+        search(v)
+    }
+}
+
+func search(int s) {
+    x.add(s)
+    visited[s] = true
+    while(!x.isEmpty()) {
+        int v = x.remove();
+        
+        for (int w : G.adj(v)) {
+            if (!visited[w]) {
+                x.add(w)
+                visited[w] = true
+            }
+        }
+
+    }
+}
+```
