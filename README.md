@@ -103,7 +103,7 @@ func search(int s) {
 
 ---
 
-## floodfill
+## 第六章 floodfill
 
 - [695](leetcode/l-695)
 - [200](leetcode/l-200)
@@ -114,3 +114,13 @@ func search(int s) {
 - [529](leetcode/l-529) 扫雷
 - [827](leetcode/l-827) 最大人工岛 两步法解题
 
+---
+
+## 第七章 BFS
+
+抽象状态和状态转移
+
+- [1091](leetcode/l-1091) 二进制矩阵中的最短路径
+- [752](leetcode/l-752)  打开转盘锁，使用图论建模
+- [7-4一道智力题](traverse_graph/7-4-IQ-test) 倒水问题
+- [7-4二道智力题](traverse_graph/7-4-IQ-test) 农夫运狼羊菜
