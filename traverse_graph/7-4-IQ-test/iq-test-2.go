@@ -2,74 +2,56 @@ package __4_IQ
 
 import "fmt"
 
-// 000 -->  100 010 001
-// 010 -->  110 000 011   100 001
-//
-// 0000
-// 0101
-// 0100
-// 1101
-// 1000
-// 1011
-// 1010
-// 1111
-
 func solveProblem2() {
 	const (
-		S_A_SIDE = '0'
-		S_B_SIDE = '1'
+		S_A_SIDE    = '0' // 在河岸一边
+		S_B_SIDE    = '1' // 在河岸另一边
+		I_WOLF      = 0   // 数组中狼的 idx
+		I_SHEEP     = 1   // 数组中羊的 idx
+		I_VEGETABLE = 2   // 数组中菜的 idx
+		I_FARMER    = 3   // 数组中农夫的 idx
 	)
 	var (
-		initStatus = []byte{S_A_SIDE, S_A_SIDE, S_A_SIDE, S_A_SIDE} // 狼 羊 菜 农夫
-		cango      = func(status []byte) bool {
-			if status[0] == status[1] && status[3] == status[1] {
-				return false
+		//   				   狼        羊        菜       农夫
+		initStatus = []byte{S_A_SIDE, S_A_SIDE, S_A_SIDE, S_A_SIDE}
+
+		// 如果狼和羊、羊和菜在同一河岸的情况下，必须农夫和他们在一边才行，否则不行
+		// 其他情况都是可以的
+		cango = func(status []byte) bool {
+			if status[I_WOLF] == status[I_SHEEP] {
+				return status[I_FARMER] == status[I_SHEEP]
 			}
-			if status[1] == status[2] && status[1] == status[3] {
-				return false
+			if status[I_SHEEP] == status[I_VEGETABLE] {
+				return status[I_FARMER] == status[I_SHEEP]
 			}
 			return true
 		}
 		finish = func(status []byte) bool {
-			return status[0] == S_B_SIDE && status[1] == S_B_SIDE && status[2] == S_B_SIDE && status[3] == S_B_SIDE
+			return status[I_WOLF] == S_B_SIDE &&
+				status[I_SHEEP] == S_B_SIDE &&
+				status[I_VEGETABLE] == S_B_SIDE &&
+				status[I_FARMER] == S_B_SIDE
 		}
-		toggleStatus = func(status byte) byte { return 97 - status }
-		nextStatus   = func(status []byte) [][]byte {
-			farmerStatus := status[3]
-			if status[0] == status[1] && status[1] == status[2] {
-				if status[0] != farmerStatus {
-					return [][]byte{}
-				} else {
-					return [][]byte{{status[0], toggleStatus(status[1]), status[2], toggleStatus(status[3])}}
-				}
-			}
-			if status[0] == status[1] && status[1] == farmerStatus {
-				return [][]byte{
-					{status[0], toggleStatus(status[1]), status[2], toggleStatus(status[3])},
-					{toggleStatus(status[0]), status[1], status[2], toggleStatus(status[3])},
-				}
-			}
-			if status[1] == status[2] && status[1] == farmerStatus {
-				return [][]byte{
-					{status[0], toggleStatus(status[1]), status[2], toggleStatus(status[3])},
-					{status[0], status[1], toggleStatus(status[2]), toggleStatus(status[3])},
-				}
-			}
-			var result [][]byte
+		toggleStatus = func(status byte) byte { return S_A_SIDE + S_B_SIDE - status }
+
+		// 下一个状态：农夫带一个和在在同一河岸的物件过河，当然，只带自己是可以的
+		nextStatus = func(status []byte) (result [][]byte) {
+			farmerStatus := status[I_FARMER]
 			for idx, v := range status {
-				newStatus := make([]byte, len(status))
-				copy(newStatus, status)
 				if v == farmerStatus {
-					newStatus[idx] = toggleStatus(status[idx])
-					result = append(result, newStatus)
+					ns := make([]byte, len(initStatus))
+					copy(ns, status)
+					ns[idx] = toggleStatus(v)
+					ns[I_FARMER] = toggleStatus(v)
+					result = append(result, ns)
 				}
 			}
-			return result
+			return
 		}
+
 		preStatusMap = make(map[string]string)
 		queue        []string
 	)
-	_ = cango
 
 	preStatusMap[string(initStatus)] = string(initStatus)
 	queue = append(queue, string(initStatus))
@@ -80,12 +62,14 @@ LOOP:
 		queue = queue[1:]
 		nextStatuses := nextStatus(s)
 		for _, ns := range nextStatuses {
-			if _, ok := preStatusMap[string(ns)]; !ok {
-				preStatusMap[string(ns)] = string(s)
-				if finish(ns) {
-					break LOOP
+			if cango(ns) {
+				if _, ok := preStatusMap[string(ns)]; !ok {
+					preStatusMap[string(ns)] = string(s)
+					if finish(ns) {
+						break LOOP
+					}
+					queue = append(queue, string(ns))
 				}
-				queue = append(queue, string(ns))
 			}
 		}
 	}
@@ -95,9 +79,9 @@ LOOP:
 	for fs != string(initStatus) {
 		fmt.Println(fs)
 		if _, ok := preStatusMap[fs]; !ok {
-			fmt.Println("failed to get result")
-			return
+			panic("failed to get result")
 		}
 		fs = preStatusMap[fs]
 	}
+	fmt.Println(fs)
 }

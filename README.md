@@ -124,3 +124,4 @@ func search(int s) {
 - [752](leetcode/l-752)  打开转盘锁，使用图论建模
 - [7-4一道智力题](traverse_graph/7-4-IQ-test) 倒水问题
 - [7-4二道智力题](traverse_graph/7-4-IQ-test) 农夫运狼羊菜
+- [773](leetcode/l-773) 滑动谜题  O(n!) ->  O(V + E) = O(V + 4V) = O(V) ，图总共有 n! 种可能 (\>O(2^n))
