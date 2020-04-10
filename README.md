@@ -190,7 +190,7 @@ cut edge
 
 相邻节点的所能到达的最小序号比当前节点需要要大，为桥
 
-[详细代码](cpt8-cut-edge-points/bridge.go)
+[详细代码](cpt08-cut-edge-points/bridge.go)
 
 ---
 
@@ -220,3 +220,25 @@ DSF 遍历树，图中非遍历树的边可以指向自己祖先的节点，而 
 |    |
 6 ---+
 ```
+
+---
+
+## cpt9 哈密尔顿路径与回路
+
+哈密尔顿回路：从一个点出发，沿着边行走，**经过每个顶点恰好一次**，之后再**回到出发点** 。
+
+类似于 旅行推销员问题（Travelling Salesman Problem，**TSP**，带权图，完全图），求最短哈密尔顿回路
+
+NP 难问题，无法在多项式时间内完成
+
+[代码：哈密尔顿环](cpt09-hamiltonian)
+
+[LeetCode: 980不同路径 III](leetcode/l-980)
+
+对 'visited' 数组进行状态压缩，使用位运算
+- `i` 是否为 1 ：visited && (1 << i) == 0
+- 若 `i` 为 0，设为 1 ：visited + (1 << i)
+- 若 `i` 为 1，设为 0 : visited - (1 << i)
+
+记忆化搜索，记录 visited 和 currVertex 的状态 
+
