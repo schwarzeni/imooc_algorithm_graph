@@ -5,7 +5,7 @@ import (
 )
 
 // 默认是连通图
-func cutPoints(g graph.Graph, startVertex int) (result []int) {
+func CutPoints(g graph.Graph, startVertex int) (result []int) {
 	var (
 		ord     = make([]int, g.V())
 		low     = make([]int, g.V())
