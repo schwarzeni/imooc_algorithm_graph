@@ -3,7 +3,7 @@ package graph
 const MatrixEdge = 1
 
 type Graph interface {
-	AddEdge(x int, y int) error
+	AddEdge(x int, y int, w int) error
 	V() int
 	E() int
 	HasEdge(x int, y int) (hasEdge bool, err error)

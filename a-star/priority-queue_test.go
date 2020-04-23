@@ -25,7 +25,8 @@ func TestPriorityQueue(t *testing.T) {
 	heap.Push(&pq, &Item{Value: []int{4, 5}, Priority: 4})
 	heap.Push(&pq, &Item{Value: []int{1, 23}, Priority: 2})
 
-	expectValueResult := []int{6, 5, 4, 3, 2, 1}
+	//expectValueResult := []int{6, 5, 4, 3, 2, 1}
+	expectValueResult := []int{1, 2, 3, 4, 5, 6}
 	result := []int{}
 	for pq.Len() > 0 {
 		item := heap.Pop(&pq).(*Item)

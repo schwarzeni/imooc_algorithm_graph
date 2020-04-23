@@ -10,13 +10,13 @@ import (
 	"strings"
 )
 
-type AdjList struct {
+type WeightedAdjList struct {
 	v   int
 	e   int
 	adj []map[int]int
 }
 
-func (a *AdjList) String() (output string) {
+func (a *WeightedAdjList) String() (output string) {
 	output += fmt.Sprintf("v = %d, e = %d\n", a.v, a.e)
 	for x, v := range a.adj {
 		var xvs []int
@@ -26,21 +26,21 @@ func (a *AdjList) String() (output string) {
 		sort.Ints(xvs)
 		output += fmt.Sprintf("%d: ", x)
 		for _, y := range xvs {
-			output += fmt.Sprintf("%d ", y)
+			output += fmt.Sprintf("%d(%d) ", y, v[y])
 		}
 		output += "\n"
 	}
 	return
 }
 
-func (a *AdjList) IsValidVertex(v int) error {
+func (a *WeightedAdjList) IsValidVertex(v int) error {
 	if v < 0 || v >= a.v {
 		return fmt.Errorf("vertex %d is invalid", v)
 	}
 	return nil
 }
 
-func (a *AdjList) AddEdge(x int, y int, w int) error {
+func (a *WeightedAdjList) AddEdge(x int, y int, w int) error {
 	if err := a.IsValidVertex(x); err != nil {
 		return err
 	}
@@ -53,20 +53,20 @@ func (a *AdjList) AddEdge(x int, y int, w int) error {
 	if x == y {
 		return errors.New("self loop is detected")
 	}
-	a.adj[x][y] = MatrixEdge
-	a.adj[y][x] = MatrixEdge
+	a.adj[x][y] = w
+	a.adj[y][x] = w
 	return nil
 }
 
-func (a *AdjList) V() int {
+func (a *WeightedAdjList) V() int {
 	return a.v
 }
 
-func (a *AdjList) E() int {
+func (a *WeightedAdjList) E() int {
 	return a.e
 }
 
-func (a *AdjList) HasEdge(x int, y int) (hasEdge bool, err error) {
+func (a *WeightedAdjList) HasEdge(x int, y int) (hasEdge bool, err error) {
 	if err := a.IsValidVertex(x); err != nil {
 		return false, err
 	}
@@ -79,7 +79,7 @@ func (a *AdjList) HasEdge(x int, y int) (hasEdge bool, err error) {
 	return false, nil
 }
 
-func (a *AdjList) Adj(v int) (vs []int, err error) {
+func (a *WeightedAdjList) Adj(v int) (vs []int, err error) {
 	if err = a.IsValidVertex(v); err != nil {
 		return nil, err
 	}
@@ -90,23 +90,27 @@ func (a *AdjList) Adj(v int) (vs []int, err error) {
 	return
 }
 
-func (a *AdjList) Degree(v int) (degree int, err error) {
+func (a *WeightedAdjList) Degree(v int) (degree int, err error) {
 	if err = a.IsValidVertex(v); err != nil {
 		return -1, err
 	}
 	return len(a.adj[v]), nil
 }
 
-func (a *AdjList) IsValid() error {
+func (a *WeightedAdjList) GetWeight(v, w int) int {
+	return a.adj[v][w]
+}
+
+func (a *WeightedAdjList) IsValid() error {
 	return nil
 }
 
-func newAdjList(filename string) *AdjList {
+func newWeightedAdjList(filename string) *WeightedAdjList {
 	var (
 		err      error
 		file     *os.File
 		scanner  *bufio.Scanner
-		adjList  = &AdjList{}
+		adjList  = &WeightedAdjList{}
 		lineData []string
 	)
 	if file, err = os.Open(filename); err != nil {
@@ -130,9 +134,9 @@ func newAdjList(filename string) *AdjList {
 		lineData = strings.Split(scanner.Text(), " ")
 		x, _ := strconv.Atoi(lineData[0])
 		y, _ := strconv.Atoi(lineData[1])
+		w, _ := strconv.Atoi(lineData[2])
 
-		// 无向图
-		if err := adjList.AddEdge(x, y, 1); err != nil {
+		if err := adjList.AddEdge(x, y, w); err != nil {
 			panic(err)
 		}
 	}
@@ -144,6 +148,6 @@ func newAdjList(filename string) *AdjList {
 	return adjList
 }
 
-func NewAdjList(filename string) *AdjList {
-	return newAdjList(filename)
+func NewWeightedAdjList(filename string) *WeightedAdjList {
+	return newWeightedAdjList(filename)
 }

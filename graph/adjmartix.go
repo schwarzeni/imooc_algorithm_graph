@@ -48,7 +48,7 @@ func (a *AdjMatrix) IsValidVertex(v int) error {
 	return nil
 }
 
-func (a *AdjMatrix) AddEdge(x int, y int) error {
+func (a *AdjMatrix) AddEdge(x int, y int, w int) error {
 	if err := a.IsValidVertex(x); err != nil {
 		return err
 	}
@@ -136,7 +136,7 @@ func newAdjMatrix(filename string) *AdjMatrix {
 		y, _ := strconv.Atoi(lineData[1])
 
 		// 无向图
-		if err := adjMatrix.AddEdge(x, y); err != nil {
+		if err := adjMatrix.AddEdge(x, y, 1); err != nil {
 			panic(err)
 		}
 	}
