@@ -10,3 +10,20 @@ type Graph interface {
 	Adj(v int) (vs []int, err error)
 	Degree(v int) (degree int, err error)
 }
+
+type WeightedGraph interface {
+	Graph
+	GetWeight(v, w int) int
+}
+
+type DirectedGraph interface {
+	Graph
+	InDegree(v int) int
+	OutDegree(v int) int
+}
+
+type DirectedWeightedGraph interface {
+	WeightedGraph
+	InDegree(v int) int
+	OutDegree(v int) int
+}

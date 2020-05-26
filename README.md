@@ -408,3 +408,71 @@ Kruskal 算法思想：尽量使用短边(不能构成环)，贪心算法
 检测负权环：dis[v][v] < 0 ?
 
 ![](./assets/Floyed.png)
+
+---
+
+## cpt13 有向图算法
+
+[相关代码](./cpt13-directed-graph)
+
+无向图是特殊的有向图
+
+### 有向图的环检测 DAG
+
+[代码实现](./cpt13-directed-graph/cycledetection.go)
+
+DAG：Directed Acyclic graph
+
+除了无向图的环检测所必须的操作外，还需要标记当前访问的路径
+
+### 有向图的欧拉路径
+
+入度等于出度
+
+---
+
+### 拓扑排序
+
+[队列实现](./cpt13-directed-graph/topological-sort.go)
+
+每次删除入度为 0 的点即可，同时，这个算法可以用来做有向图环检测
+
+只有 DAG 才能进行拓扑排序
+
+[深度优先遍历实现](./cpt13-directed-graph/topological-sort-2.go)
+
+使用深度优先遍历的后序遍历。当访问完所有相关节点后再访问该节点
+
+**缺点：不能进行环检测**
+
+---
+
+### 强联通分量
+
+有向图联通。在一个强联通分量中，任何两点都可达
+
+将所有强连通分量看作一个点，得到的有向图一定是DAG
+
+![](./assets/Strongly%20connected%20component.png)
+
+每个联通分量先内部遍历，再按照拓扑排序逆序遍历
+
+![](./assets/Strongly%20connected%20component%20traverse.png)
+
+---
+
+### Kosaraju 算法
+
+![](./assets/Kosaraju%201.png)
+
+如果一个强连通分量能够到一点(或是另一个强联通分量)
+
+则翻转这张图后,进行后序遍历,这一点一定相较强邻通分量中的点后出现
+
+则**翻转**这张图后,对于**后序**遍历的**逆**,这一点一定出现在这个强邻通分量中的点之前
+
+所以，求强联通分量序列的算法为：
+
+翻转图，求其后序遍历的逆，一定是强连通分量的拓扑排序的逆，然后求 Connected Component 即可
+
+(代码摸鱼不写了)
