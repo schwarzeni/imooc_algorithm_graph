@@ -26,4 +26,5 @@ type DirectedWeightedGraph interface {
 	WeightedGraph
 	InDegree(v int) int
 	OutDegree(v int) int
+	SetWeight(v, w, weight int)
 }

@@ -110,6 +110,10 @@ func (a *DirectedWeightedAdjList) GetWeight(v, w int) int {
 	return a.adj[v][w]
 }
 
+func (a *DirectedWeightedAdjList) SetWeight(v, w, weight int) {
+	a.adj[v][w] = weight
+}
+
 func (a *DirectedWeightedAdjList) IsValid() error {
 	return nil
 }

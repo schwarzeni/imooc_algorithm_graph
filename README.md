@@ -476,3 +476,57 @@ DAG：Directed Acyclic graph
 翻转图，求其后序遍历的逆，一定是强连通分量的拓扑排序的逆，然后求 Connected Component 即可
 
 (代码摸鱼不写了)
+
+---
+
+## cpt14 网络流算法
+
+### 网络流模型和最大流问题
+
+一个有向图
+
+一个源点（s，入度为0）
+
+一个汇点（t，出度为0）
+
+边上有非负权值，表示容量
+
+应用：水管、交通、网络
+
+![](./assets/max-network-flow.png)
+
+---
+
+### Ford-Fulkerson 思想
+
+为一个算法框架
+
+流量回退；在残量图中不断找增广路径，直到没有增广路径
+
+增广路径：在残量图中还能找到一条路径，所有的权值都大于零
+
+原图中的 v-w 容量为 `c`，流量为 `f`
+
+残量图中的 v-w 的权值为 `c - f` ，w-v 的权值为 `f`
+
+![](./assets/residual%20graph.png)
+
+---
+
+### Edmonds-Karp 算法
+
+[算法实现](./cpt14-network-flow/edmonds-karp.go)
+
+不停广度优先搜索残量图，直到无法找到一条完整的路径
+
+算法复杂度：O(V * E *E)
+
+---
+
+### 网络流算法建模
+
+解决分配问题
+
+![](./assets/network%20flow%20model%20question.png)
+
+![](./assets/network%20flow%20model.png)
