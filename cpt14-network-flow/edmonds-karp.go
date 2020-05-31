@@ -13,11 +13,11 @@ type EdmondsKarp struct {
 	s, t, maxFlow            int
 }
 
-func (ek *EdmondsKarp) result() int {
+func (ek *EdmondsKarp) Result() int {
 	return ek.maxFlow
 }
 
-func (ek *EdmondsKarp) flow(v, w int) int {
+func (ek *EdmondsKarp) Flow(v, w int) int {
 	return ek.residualNetwork.GetWeight(w, v)
 }
 
@@ -66,7 +66,7 @@ func (ek *EdmondsKarp) String() string {
 	for v := 0; v < ek.network.V(); v++ {
 		adjs, _ := ek.network.Adj(v)
 		for _, w := range adjs {
-			sbuilder.WriteString(fmt.Sprintf("%d-%d: %d / %d\n", v, w, ek.flow(v, w), ek.network.GetWeight(v, w)))
+			sbuilder.WriteString(fmt.Sprintf("%d-%d: %d / %d\n", v, w, ek.Flow(v, w), ek.network.GetWeight(v, w)))
 		}
 	}
 	return sbuilder.String()

@@ -10,14 +10,26 @@ const (
 	g_TYPE_2
 )
 
-const startV = 0
+type Bipartite struct {
+	g            graph.Graph
+	part         [2][]int
+	isBitpartite bool
+}
 
-func IsBipartite(g graph.Graph) bool {
-	if g.V() == 0 {
-		return false
+func (b *Bipartite) GetBitpartite() [2][]int {
+	return b.part
+}
+
+func (b *Bipartite) IsBitpartite() bool {
+	return b.isBitpartite
+}
+
+func (b *Bipartite) testIsBipartite() {
+	if b.g.V() == 0 {
+		return
 	}
-	vmarked := make([]gBipartiteType, g.V())
-	for i := 0; i < g.V(); i++ {
+	vmarked := make([]gBipartiteType, b.g.V())
+	for i := 0; i < b.g.V(); i++ {
 		vmarked[i] = g_UNVISITED
 	}
 
@@ -28,7 +40,7 @@ func IsBipartite(g graph.Graph) bool {
 		if currentType == g_TYPE_1 {
 			oppositeType = g_TYPE_2
 		}
-		vs, _ := g.Adj(cv)
+		vs, _ := b.g.Adj(cv)
 		for _, v := range vs {
 			if vmarked[v] == g_UNVISITED {
 				vmarked[v] = oppositeType
@@ -42,6 +54,29 @@ func IsBipartite(g graph.Graph) bool {
 		return true
 	}
 
-	vmarked[startV] = g_TYPE_1
-	return dfs(startV)
+	// fix bug loop
+	vmarked[0] = g_TYPE_1
+	for v := 0; v < b.g.V(); v++ {
+		if v == 0 || vmarked[v] == g_UNVISITED {
+			if !dfs(v) {
+				b.isBitpartite = false
+				return
+			}
+		}
+	}
+	b.isBitpartite = true
+	for idx, t := range vmarked {
+		if t == g_TYPE_1 {
+			b.part[0] = append(b.part[0], idx)
+		} else if t == g_TYPE_2 {
+			b.part[1] = append(b.part[1], idx)
+		}
+	}
+	return
+}
+
+func NewBipartite(g graph.Graph) *Bipartite {
+	b := &Bipartite{g: g}
+	b.testIsBipartite()
+	return b
 }

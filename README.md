@@ -530,3 +530,39 @@ DAG：Directed Acyclic graph
 ![](./assets/network%20flow%20model%20question.png)
 
 ![](./assets/network%20flow%20model.png)
+
+---
+
+## cpt15 匹配问题
+
+### 最大匹配、完全匹配
+
+无向二分图
+
+选边，每一条边两端的点都应该是不同的
+
+应用场景：相亲、选导师
+
+![](./assets/most%20match.png)
+
+---
+
+### 使用最大流算法解决匹配问题
+
+[代码实现](./cpt15-match/most-match.go)
+
+添加起始和终止边，将二分无向图图改造为有向图，求其最大流即为最大匹配个数
+
+![](./assets/network%20flow%20best%20match.png)
+
+---
+
+### 匈牙利算法
+
+不借助网络流和有向图模型
+
+![](./assets/Hungarian.png)
+
+有增广路径，意味着最大匹配数可以加一
+
+可以利用 [BFS](./cpt15-match/hungarian-bfs.go) 和 [DFS](./cpt15-match/hungarian-dfs.go) 实现
